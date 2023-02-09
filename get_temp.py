@@ -13,16 +13,18 @@ GPIO.cleanup()
 
 instance = dht11.DHT11(pin=14)
 
+# ロギング設定
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# 出力先を'./temp.log'に指定
+handler = logging.FileHandler('./temp.log')
+handler.setLevel(logging.INFO)
+
 while True:
     result = instance.read()
     if result.is_valid():
 
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.INFO)
-
-        # 出力先を'./temp.log'に指定
-        handler = logging.FileHandler('./temp.log')
-        handler.setLevel(logging.INFO)
         date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
         formatter = logging.Formatter(date + ' %(message)s')
         handler.setFormatter(formatter)
@@ -31,4 +33,4 @@ while True:
         # ログファイルに出力
         logger.info(str(result.temperature) + ',' + str(result.humidity))
 
-    time.sleep(60)  # 実行頻度（1分毎実行）
+    time.sleep(60)  # 実行頻度（1分一回実行）
